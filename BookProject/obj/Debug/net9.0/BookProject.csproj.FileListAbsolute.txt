@@ -1,0 +1,15 @@
+C:\Users\brc\SPLab-BerceaRaul\BookProject\obj\Debug\net9.0\BookProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\brc\SPLab-BerceaRaul\BookProject\obj\Debug\net9.0\BookProject.AssemblyInfoInputs.cache
+C:\Users\brc\SPLab-BerceaRaul\BookProject\obj\Debug\net9.0\BookProject.AssemblyInfo.cs
+C:\Users\brc\SPLab-BerceaRaul\BookProject\obj\Debug\net9.0\BookProject.csproj.CoreCompileInputs.cache
+C:\Users\brc\SPLab-BerceaRaul\BookProject\obj\Debug\net9.0\BookProject.sourcelink.json
+C:\Users\brc\SPLab-BerceaRaul\BookProject\bin\Debug\net9.0\BookProject.exe
+C:\Users\brc\SPLab-BerceaRaul\BookProject\bin\Debug\net9.0\BookProject.deps.json
+C:\Users\brc\SPLab-BerceaRaul\BookProject\bin\Debug\net9.0\BookProject.runtimeconfig.json
+C:\Users\brc\SPLab-BerceaRaul\BookProject\bin\Debug\net9.0\BookProject.dll
+C:\Users\brc\SPLab-BerceaRaul\BookProject\bin\Debug\net9.0\BookProject.pdb
+C:\Users\brc\SPLab-BerceaRaul\BookProject\obj\Debug\net9.0\BookProject.dll
+C:\Users\brc\SPLab-BerceaRaul\BookProject\obj\Debug\net9.0\refint\BookProject.dll
+C:\Users\brc\SPLab-BerceaRaul\BookProject\obj\Debug\net9.0\BookProject.pdb
+C:\Users\brc\SPLab-BerceaRaul\BookProject\obj\Debug\net9.0\BookProject.genruntimeconfig.cache
+C:\Users\brc\SPLab-BerceaRaul\BookProject\obj\Debug\net9.0\ref\BookProject.dll
