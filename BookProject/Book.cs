@@ -1,23 +1,53 @@
+using System;
+using System.Collections.Generic;
+
 public class Book
 {
     public string Title;
-    public Author Author;
-    public List<Chapter> Chapters;
+    public List<Author>? authors;
+    public List<Element>? elements = new List<Element>();
 
-    public Book(string title, Author author, List<Chapter> chapters)
+    public Book(string title)
     {
         Title = title;
-        Author = author;
-        Chapters = chapters;
     }
 
     public void Print()
     {
-        System.Console.WriteLine("Book: " + Title);
-        System.Console.WriteLine("Author: " + (Author != null ? Author.Name : "Unknown"));
-        foreach (var chapter in Chapters)
+        Console.WriteLine($"Book: {Title}\n");
+        if (authors != null)
         {
-            chapter.Print();
+            Console.WriteLine("Authors:");
+            foreach (var author in authors)
+                author.Print();
+                Console.WriteLine("");
         }
+        else
+        {
+            Console.WriteLine("No authors in book {Title}");
+        }
+
+        if (elements != null)
+        {
+            Console.WriteLine("Elements:");
+            foreach (var element in elements)
+                element.Print();
+        }
+        else
+        {
+            Console.WriteLine("No elements in book {Title}");
+        }
+    }
+
+    public void AddContent(Element element)
+    {
+        elements.Add(element);
+    }
+
+    public void AddAuthor(Author author)
+    {
+        if (authors == null)
+            authors = new List<Author>();
+        authors.Add(author);
     }
 }

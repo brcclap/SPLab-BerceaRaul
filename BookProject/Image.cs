@@ -1,14 +1,31 @@
-public class Image
+using System;
+
+public class Image : Element
 {
-    public string url;
+    public string Url { get; set; }
 
     public Image(string url)
     {
-        this.url = url;
+        Url = url;
     }
 
     public void Print()
     {
-        System.Console.WriteLine("      Image: " + url);
+        Console.WriteLine($"Image with name:{Url}");
+    }
+
+    public void Add(Element element)
+    {
+        throw new NotSupportedException("Cannot add to an image.");
+    }
+
+    public void Remove(Element element)
+    {
+        throw new NotSupportedException("Cannot remove from an image.");
+    }
+
+    public Element Get(int index)
+    {
+        throw new NotSupportedException("Image has no children.");
     }
 }

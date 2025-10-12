@@ -1,6 +1,8 @@
+using System;
+
 public class Author
 {
-    public string Name;
+    public string Name { get; set; }
 
     public Author(string name)
     {
@@ -9,6 +11,6 @@ public class Author
 
     public void Print()
     {
-        System.Console.WriteLine("Author: " + Name);
+        Console.WriteLine($"Author: {Name}");
     }
 }
