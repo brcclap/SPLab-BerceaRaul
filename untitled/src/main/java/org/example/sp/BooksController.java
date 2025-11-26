@@ -14,11 +14,15 @@ public class BooksController {
 
     private final BooksService booksService;
     private final CommandExecutor commandExecutor;
+    private final AllBooksSubject allBooksSubject;
 
     @Autowired
-    public BooksController(BooksService booksService, CommandExecutor commandExecutor) {
+    public BooksController(BooksService booksService,
+                           CommandExecutor commandExecutor,
+                           AllBooksSubject allBooksSubject) {
         this.booksService = booksService;
         this.commandExecutor = commandExecutor;
+        this.allBooksSubject = allBooksSubject;
     }
 
     @GetMapping
@@ -34,12 +38,13 @@ public class BooksController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createBook(@RequestBody Book book) {
+    public Book createBook(@RequestBody Book book) {
         Command<Book> cmd = new CreateBookCommand(booksService, book);
+        Book savedBook = commandExecutor.execute(cmd);
 
-        commandExecutor.executeAsync(cmd);
+        allBooksSubject.add(savedBook);
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Book creation queued.");
+        return savedBook;
     }
 
     @PutMapping("/{id}")

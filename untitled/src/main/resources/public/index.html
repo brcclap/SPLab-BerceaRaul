@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Observer</title>
+</head>
+<body>
+<h1>All Books Observer</h1>
+<a href="javascript:void(0)" onclick="sendRequest()">Fetch Books (Start Listening)</a>
+<div id="sseDiv" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;"></div>
+
+<script>
+    function sendRequest() {
+        if(typeof(EventSource) !== "undefined") {
+            const source = new EventSource(`http://localhost:8080/books-sse`);
+
+            source.onmessage = function(event) {
+                console.log("Data received: " + event.data);
+                const data = JSON.parse(event.data);
+                document.getElementById("sseDiv").innerHTML +=
+                    "New Book Added: " + data.title + " (ID: " + data.id + ")<br>";
+            };
+
+            source.onerror = function(err) {
+                console.error("EventSource failed:", err);
+            };
+
+            document.getElementById("sseDiv").innerHTML = "Listening for new books...<br>";
+        } else {
+            document.getElementById("sseDiv").innerHTML = "Your browser does not support server-sent events.";
+        }
+    }
+</script>
+</body>
+</html>
