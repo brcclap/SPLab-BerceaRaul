@@ -1,0 +1,4 @@
+GymFlow (Gym Class Scheduler)
+Concept: An API for a gym where users can sign up for specific fitness classes.
+
+Key Entities: Trainer (name, specialty), ClassSession (type, startTime, capacity), Member.
