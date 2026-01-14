@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Gym Manager Test</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 300px; }
+        h2 { border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 0; }
+        input, button { width: 100%; margin-bottom: 10px; padding: 8px; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        .refresh-btn { background-color: #007bff; }
+        .refresh-btn:hover { background-color: #0069d9; }
+        #log { background: #333; color: #fff; padding: 10px; border-radius: 5px; height: 150px; overflow-y: scroll; margin-top: 20px; font-family: monospace; }
+        pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+<h1>🏋️ Gym Management Dashboard</h1>
+
+<div class="container">
+    <div class="card">
+        <h2>1. Adaugă Instructor</h2>
+        <input type="text" id="instName" placeholder="Nume Instructor">
+        <input type="text" id="instSpec" placeholder="Specializare (ex: Yoga)">
+        <button onclick="addInstructor()">Salvează Instructor</button>
+    </div>
+
+    <div class="card">
+        <h2>2. Adaugă Client</h2>
+        <input type="text" id="clientName" placeholder="Nume Client">
+        <input type="email" id="clientEmail" placeholder="Email Client">
+        <button onclick="addClient()">Salvează Client</button>
+    </div>
+
+    <div class="card">
+        <h2>3. Creează Clasă</h2>
+        <input type="text" id="className" placeholder="Nume Clasă (ex: Pilates)">
+        <input type="number" id="classCapacity" placeholder="Capacitate (nr)">
+        <input type="text" id="classTime" placeholder="Data (ex: 2023-12-01T10:00:00)" value="2023-12-01T18:00:00">
+        <input type="number" id="classInstId" placeholder="ID Instructor">
+        <button onclick="createClass()">Creează Clasă</button>
+    </div>
+
+    <div class="card">
+        <h2>4. Înscrie Client</h2>
+        <input type="number" id="enrollClassId" placeholder="ID Clasă">
+        <input type="number" id="enrollClientId" placeholder="ID Client">
+        <button onclick="enrollClient()" style="background-color: #e0a800;">Înscrie la Clasă</button>
+    </div>
+</div>
+
+<h3>Vizualizare Date</h3>
+<button class="refresh-btn" style="width: 200px;" onclick="loadClasses()">🔄 Vezi Clase și Înscrieri</button>
+<div id="results"></div>
+
+<h3>Jurnal Activitate (Logs)</h3>
+<div id="log"></div>
+
+<script>
+    const API_URL = 'http://localhost:8080/api/gym';
+
+    function log(message) {
+        const logDiv = document.getElementById('log');
+        logDiv.innerHTML += `> ${message}<br>`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    async function postData(endpoint, data) {
+        try {
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) throw new Error(await response.text());
+            const json = await response.json();
+            log(`Success: Creat ID ${json.id}`);
+            return json;
+        } catch (error) {
+            log(`Eroare: ${error.message}`);
+            alert(`Eroare: ${error.message}`);
+        }
+    }
+
+    // 1. Instructor
+    function addInstructor() {
+        const name = document.getElementById('instName').value;
+        const spec = document.getElementById('instSpec').value;
+        postData('/instructors', { name: name, specialization: spec });
+    }
+
+    // 2. Client
+    function addClient() {
+        const name = document.getElementById('clientName').value;
+        const email = document.getElementById('clientEmail').value;
+        postData('/clients', { name: name, email: email });
+    }
+
+    // 3. Class
+    function createClass() {
+        const name = document.getElementById('className').value;
+        const cap = document.getElementById('classCapacity').value;
+        const time = document.getElementById('classTime').value;
+        const instId = document.getElementById('classInstId').value;
+
+        postData(`/classes/instructor/${instId}`, {
+            name: name,
+            capacity: parseInt(cap),
+            scheduleTime: time
+        });
+    }
+
+    // 4. Enroll
+    async function enrollClient() {
+        const classId = document.getElementById('enrollClassId').value;
+        const clientId = document.getElementById('enrollClientId').value;
+
+        try {
+            const response = await fetch(`${API_URL}/classes/${classId}/enroll/${clientId}`, { method: 'POST' });
+            if (!response.ok) throw new Error(await response.text());
+            const json = await response.json();
+            log(`Succes: Clientul ${clientId} înscris la clasa ${classId}`);
+            loadClasses(); // Refresh automat
+        } catch (error) {
+            log(`Eroare Înscriere: ${error.message}`);
+            alert(error.message);
+        }
+    }
+
+    // 5. Load All
+    async function loadClasses() {
+        const res = await fetch(`${API_URL}/classes`);
+        const data = await res.json();
+        let html = "";
+        data.forEach(c => {
+            let clientsHtml = c.enrolledClients.map(cl => `<li>${cl.name} (${cl.email})</li>`).join('');
+            html += `
+                <div style="background: white; padding: 10px; margin-top: 10px; border-left: 5px solid #007bff;">
+                    <strong>${c.name}</strong> - Instructor: ${c.instructor ? c.instructor.name : 'N/A'}<br>
+                    Capacitate: ${c.enrolledClients.length} / ${c.capacity}<br>
+                    <em>Clienți înscriși:</em>
+                    <ul>${clientsHtml || '<li>Niciun client înscris</li>'}</ul>
+                </div>
+            `;
+        });
+        document.getElementById('results').innerHTML = html;
+        log("Lista de clase actualizată.");
+    }
+</script>
+
+</body>
+</html>
